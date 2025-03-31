@@ -1,119 +1,52 @@
 package net.fryc.lab1;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
 
 public class Konto {
 
-    private final HashSet<Osoba> wlasciciele = new HashSet<>();
-
-    private boolean aktywne = false;
-    private boolean otwarte = false;
-
     private float saldo = 0.0F;
-    private String pin;
     private LocalDateTime dataOstatniejTransakcji;
+    private Stan stan;
 
-    public Konto(Collection<Osoba> wlasciciele, String pin){
-        this.wlasciciele.addAll(wlasciciele);
+    public Konto(){
         this.dataOstatniejTransakcji = LocalDateTime.now();
-        this.pin = pin;
+        this.stan = Stan.AKTYWNE;
     }
 
     public void wplac(float ilosc){
-        if(this.sprawdzCzyKontoOtwarte()){
-            if(czyDozwolonaIlosc(ilosc)){
-                this.saldo += ilosc;
-                this.zaktualizujDateOstatniejTransakcji();
-                this.sprobujReaktywowac();
-            }
-        }
+        this.getStan().wplac(this, ilosc);
     }
 
     public void wyplac(float ilosc){
-        if(this.sprawdzCzyKontoOtwarte()){
-            if(czyDozwolonaIlosc(ilosc)){
-                if(ilosc > this.saldo){
-                    System.out.println("Brak wystarczajacych srodkow na koncie!");
-                }
-                else if(this.zweryfikujTozsamosc()){
-                    //if(BankHelper.wydajPieniadze()){
-                    this.saldo -= ilosc;
-                    this.zaktualizujDateOstatniejTransakcji();
-                    this.sprobujReaktywowac();
-                    //}
-                    //else {
-                    //    System.out.println("Wystapil blad podczas proby wyplaty srodkow. Pieniadze nie zostaly pobrane z konta.");
-                    //}
-                }
-            }
-        }
+        this.getStan().wyplac(this, ilosc);
     }
 
-    public boolean zweryfikujTozsamosc(){
-        /*
-        Scanner scanner = new Scanner(System.in);
-        String pin;
-        int proby = 3;
-        while(--proby > 0){
-            System.out.println("Podaj PIN");
-            pin = scanner.nextLine();
-            if(pin.equals(this.pin)){
-                return true;
-            }
-            else {
-                System.out.println("Podany PIN jest niepoprawny");
-            }
-        }
+    public void zamknijKonto(){
+        this.setStan(Stan.ZAMKNIETE);
+    }
 
-        System.out.println("Przekroczono liczbe dostepnych prob. Weryfikacja nieudana.");
-        return false;
-         */
+    public void otworzKonto(){
+        this.setStan(Stan.NIEAKTYWNE);
+    }
+
+    public boolean tozsamoscZweryfikowana(){
         return true;
     }
 
-    private void sprobujReaktywowac(){
-        if(!this.isAktywne()){
-            this.setAktywne(true);
-            System.out.println("Konto zostalo ponownie aktywowane");
-            //BankHelper.wyslijMailaReaktywacyjnego(this.getWlasciciele());
-        }
-    }
-
-    private boolean sprawdzCzyKontoOtwarte(){
-        if(this.isOtwarte()){
-            return true;
-        }
-
-        System.out.println("Nie mozna wykonac operacji - konto jest zamkniete");
-        return false;
-    }
-
-    private void zaktualizujDateOstatniejTransakcji(){
+    public void zaktualizujDateOstatniejTransakcji(){
         this.dataOstatniejTransakcji = LocalDateTime.now();
     }
 
-    public Set<Osoba> getWlasciciele(){
-        return this.wlasciciele;
-    }
-
-
     public boolean isAktywne() {
-        return this.aktywne;
-    }
-
-    public void setAktywne(boolean aktywne) {
-        this.aktywne = aktywne;
+        return this.stan == Stan.AKTYWNE;
     }
 
     public boolean isOtwarte() {
-        return otwarte;
+        return this.stan != Stan.ZAMKNIETE;
     }
 
-    public void setOtwarte(boolean otwarte) {
-        this.otwarte = otwarte;
+    public void addSaldo(float ilosc){
+        this.saldo += ilosc;
     }
 
     public LocalDateTime getDataOstatniejTransakcji(){
@@ -124,16 +57,11 @@ public class Konto {
         return this.saldo;
     }
 
-    public void setPin(String pin){
-        this.pin = pin;
+    public Stan getStan(){
+        return this.stan;
     }
 
-    private static boolean czyDozwolonaIlosc(float ilosc){
-        if(ilosc > 0){
-            return true;
-        }
-
-        System.out.println("Kwota musi byc wieksza od 0!");
-        return false;
+    public void setStan(Stan stan){
+        this.stan = stan;
     }
 }

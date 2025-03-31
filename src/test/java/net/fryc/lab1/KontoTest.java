@@ -3,15 +3,11 @@ package net.fryc.lab1;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
-
 class KontoTest {
 
     @Test
     void testWplaty() {
-        Konto testKonto = new Konto(List.of(new Osoba("Ktos", "Testowy", "000", "Twoj komputer", "010101")), "10");
-        testKonto.setOtwarte(true);
-        testKonto.setAktywne(true);
+        Konto testKonto = new Konto();
 
         testKonto.wplac(50F);
         Assertions.assertEquals(50F, testKonto.getSaldo());
@@ -21,9 +17,7 @@ class KontoTest {
 
     @Test
     void testWyplaty() {
-        Konto testKonto = new Konto(List.of(new Osoba("Ktos", "Testowy", "000", "Twoj komputer", "010101")), "10");
-        testKonto.setOtwarte(true);
-        testKonto.setAktywne(true);
+        Konto testKonto = new Konto();
 
         testKonto.wyplac(50F);
         Assertions.assertEquals(0F, testKonto.getSaldo());
@@ -36,7 +30,8 @@ class KontoTest {
 
     @Test
     void testZamkniecia() {
-        Konto testKonto = new Konto(List.of(new Osoba("Ktos", "Testowy", "000", "Twoj komputer", "010101")), "10");
+        Konto testKonto = new Konto();
+        testKonto.zamknijKonto();
 
         Assertions.assertFalse(testKonto.isOtwarte());
         testKonto.wplac(50F);
@@ -44,21 +39,22 @@ class KontoTest {
         testKonto.wyplac(1F);
         Assertions.assertEquals(0F, testKonto.getSaldo());
 
-        testKonto.setOtwarte(true);
+        testKonto.otworzKonto();
         Assertions.assertTrue(testKonto.isOtwarte());
 
     }
 
     @Test
     void testAktywacji() {
-        Konto testKonto = new Konto(List.of(new Osoba("Ktos", "Testowy", "000", "Twoj komputer", "010101")), "10");
-        testKonto.setOtwarte(true);
+        Konto testKonto = new Konto();
+        testKonto.setStan(Stan.NIEAKTYWNE);
 
         Assertions.assertFalse(testKonto.isAktywne());
         testKonto.wplac(50F);
         Assertions.assertTrue(testKonto.isAktywne());
-        testKonto.setAktywne(false);
+        testKonto.zamknijKonto();
         Assertions.assertFalse(testKonto.isAktywne());
+        testKonto.otworzKonto();
         testKonto.wyplac(50F);
         Assertions.assertTrue(testKonto.isAktywne());
 

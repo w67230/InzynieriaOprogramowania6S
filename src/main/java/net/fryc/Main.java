@@ -1,23 +1,17 @@
 package net.fryc;
 
 import net.fryc.lab1.Konto;
-import net.fryc.lab1.Osoba;
-
-import java.util.List;
+import net.fryc.lab1.Stan;
 
 public class Main {
     public static void main(String[] args) {
-        Konto marek = new Konto(List.of(new Osoba("Marek", "Andrzej", "0", "Kolbuszowa", "36-100")), "1234");
-        Konto wiesiek = new Konto(List.of(new Osoba("Karol", "Kowalski", "1", "Niwiska", "36-147")), "4321");
-        Konto wspolne = new Konto(List.of(
-                new Osoba("Patryk", "Nowak", "2", "Rzeszow", "nie znam"),
-                new Osoba("Patrycja", "Nowak", "3", "Rzeszow", "nie znam")
-        ), "12");
+        Konto marek = new Konto();
+        Konto wiesiek = new Konto();
+        Konto wspolne = new Konto();
 
-        marek.setOtwarte(true);
-        wiesiek.setOtwarte(true);
+        marek.setStan(Stan.NIEAKTYWNE);
 
-        marek.setAktywne(true);
+        wspolne.zamknijKonto();
 
         System.out.println("Saldo Marka: " + marek.getSaldo());
         marek.wplac(50F);
@@ -32,7 +26,7 @@ public class Main {
         System.out.println("Saldo Wieska: " + wiesiek.getSaldo());
         wiesiek.wplac(0F);
         System.out.println("Saldo Wieska: " + wiesiek.getSaldo());
-        wiesiek.setOtwarte(false);
+        wiesiek.zamknijKonto();
 
         System.out.println("Saldo Nowakow: " + wspolne.getSaldo());
         wspolne.wplac(30F);
